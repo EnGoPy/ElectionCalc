@@ -5,7 +5,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import javax.swing.plaf.nimbus.State;
+import javax.management.Query;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.IOException;
@@ -14,74 +14,67 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.Path;
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.*;
-import java.util.Date;
 
 public class Datasource {
-    public static final String DB_NAME = "electData.db";
-    public static final String BLOCKED_ADRESS = "http://webtask.future-processing.com:8069/blocked";
-    public static final String CANDIDATES_ADRESS = "http://webtask.future-processing.com:8069/candidates";
+    private static final String DB_NAME = "electData.db";
+    private static final String BLOCKED_ADRESS = "http://webtask.future-processing.com:8069/blocked";
+    private static final String CANDIDATES_ADRESS = "http://webtask.future-processing.com:8069/candidates";
 
-    public static final String DATE_FORMAT = "yyyy-MM-dd";
-
-
-    public static final String TABLE_BLOCKED = "blockedPers";
-    public static final String COLUMN_BLOCKED_ID = "_id";
-    public static final String COLUMN_BLOCKED_PESEL = "pesel";
+    private static final String TABLE_BLOCKED = "blockedPers";
+    private static final String COLUMN_BLOCKED_ID = "_id";
+    private static final String COLUMN_BLOCKED_PESEL = "pesel";
 
 
-    public static final String TABLE_CANDIDATES = "candidates";
-    public static final String COLUMN_CANDIDATES_ID = "_id";
-    public static final String COLUMN_CANDIDATES_NAME = "name";
-    public static final String COLUMN_CANDIDATES_PARTYID = "partyId";
-    public static final String COLUMN_CANDIDATES_VOTES = "votes";
+    private static final String TABLE_CANDIDATES = "candidates";
+    private static final String COLUMN_CANDIDATES_ID = "_id";
+    private static final String COLUMN_CANDIDATES_NAME = "name";
+    private static final String COLUMN_CANDIDATES_PARTYID = "partyId";
+    private static final String COLUMN_CANDIDATES_VOTES = "votes";
 
-    public static final String TABLE_PARTYS = "partys";
-    public static final String COLUMN_PARTYS_ID = "_id";
-    public static final String COLUMN_PARTYS_NAME = "name";
-    public static final String COLUMN_PARTYS_VOTES = "votes";
+    private static final String TABLE_PARTYS = "partys";
+    private static final String COLUMN_PARTYS_ID = "_id";
+    private static final String COLUMN_PARTYS_NAME = "name";
+    private static final String COLUMN_PARTYS_VOTES = "votes";
 
 
-    public static final String TABLE_VOTERS = "partys";
-    public static final String COLUMN_VOTERS_ID = "_id";
-    public static final String COLUMN_VOTERS_NAME = "name";
-    public static final String COLUMN_VOTERS_PESEL = "pesel";
-    public static final String COLUMN_VOTERS_VOTED = "voted";
+    private static final String TABLE_VOTERS = "partys";
+    private static final String COLUMN_VOTERS_ID = "_id";
+    private static final String COLUMN_VOTERS_NAME = "name";
+    private static final String COLUMN_VOTERS_PESEL = "pesel";
+    private static final String COLUMN_VOTERS_VOTED = "voted";
 
-    public static final String TABLE_VALVOTES = "valVotes";
-    public static final String COLUMN_VALVOTES_STATUS = "status";
-    public static final String COLUMN_VALVOTES_NUMBER = "number";
+    private static final String TABLE_VALVOTES = "valVotes";
+    private static final String COLUMN_VALVOTES_STATUS = "status";
+    private static final String COLUMN_VALVOTES_NUMBER = "number";
 
-    public static final String ADD_BLOCKED_PERSON = "INSERT INTO " + TABLE_BLOCKED + " (" + COLUMN_BLOCKED_PESEL + ") VALUES(\"";
-    public static final String ADD_CANDIDATES = "INSERT INTO " + TABLE_CANDIDATES + " (" + COLUMN_CANDIDATES_NAME + ", " + COLUMN_CANDIDATES_PARTYID + ", " + COLUMN_CANDIDATES_VOTES + ") VALUES(\"";
-    public static final String ADD_PARTY = "INSERT INTO " + TABLE_PARTYS + " (" + COLUMN_PARTYS_ID + ", " + COLUMN_PARTYS_NAME + ", " + COLUMN_PARTYS_VOTES + ") VALUES(";
+    private static final String ADD_BLOCKED_PERSON = "INSERT INTO " + TABLE_BLOCKED + " (" + COLUMN_BLOCKED_PESEL + ") VALUES(\"";
+    private static final String ADD_CANDIDATES = "INSERT INTO " + TABLE_CANDIDATES + " (" + COLUMN_CANDIDATES_NAME + ", " + COLUMN_CANDIDATES_PARTYID + ", " + COLUMN_CANDIDATES_VOTES + ") VALUES(\"";
+    private static final String ADD_PARTY = "INSERT INTO " + TABLE_PARTYS + " (" + COLUMN_PARTYS_ID + ", " + COLUMN_PARTYS_NAME + ", " + COLUMN_PARTYS_VOTES + ") VALUES(";
 
-    public static final String PRINT_CANDIDATES_AND_PARTY = "SELECT " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_ID + ", " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_NAME + ", " +
-            TABLE_PARTYS + "." + COLUMN_PARTYS_NAME +", "+TABLE_CANDIDATES+"."+COLUMN_CANDIDATES_VOTES+ " FROM " + TABLE_CANDIDATES + " INNER JOIN " + TABLE_PARTYS + " ON " +
+    private static final String PRINT_CANDIDATES_AND_PARTY = "SELECT " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_ID + ", " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_NAME + ", " +
+            TABLE_PARTYS + "." + COLUMN_PARTYS_NAME + ", " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_VOTES + " FROM " + TABLE_CANDIDATES + " INNER JOIN " + TABLE_PARTYS + " ON " +
             TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_PARTYID + "=" + TABLE_PARTYS + "." + COLUMN_PARTYS_ID +
             " ORDER BY " + TABLE_CANDIDATES + "." + COLUMN_CANDIDATES_ID;
-    public static final String CHECK_BLOCK_PESEL = "SELECT * FROM " + TABLE_BLOCKED + " WHERE " + COLUMN_BLOCKED_PESEL + "=\"";
-    public static final String QUERY_TO_FIND_VOTER = "SELECT * FROM " + TABLE_VOTERS + " WHERE " + COLUMN_VOTERS_PESEL + "=\"";
+    private static final String CHECK_BLOCK_PESEL = "SELECT * FROM " + TABLE_BLOCKED + " WHERE " + COLUMN_BLOCKED_PESEL + "=?";
+    private static final String QUERY_TO_FIND_VOTER = "SELECT * FROM " + TABLE_VOTERS + " WHERE " + COLUMN_VOTERS_PESEL + "=\"";
 
-    public static final String ADD_VOTER_TO_VOTE_LIST = "INSERT INTO " + TABLE_VOTERS + " (" + COLUMN_VOTERS_NAME +", "+COLUMN_VOTERS_PESEL+", "+COLUMN_VOTERS_VOTED+") VALUES (\"";
+    private static final String ADD_VOTER_TO_VOTE_LIST = "INSERT INTO " + TABLE_VOTERS + " (" + COLUMN_VOTERS_NAME + ", " + COLUMN_VOTERS_PESEL + ", " + COLUMN_VOTERS_VOTED + ") VALUES (\"";
 
-    public static final String QUERY_FOR_CANDIDATE = "SELECT * FROM "+TABLE_CANDIDATES+" WHERE "+COLUMN_CANDIDATES_ID+"=?";
-    public static final String UPDATE_VOTES_FOR_CANDIDATE = "UPDATE "+TABLE_CANDIDATES+" SET "+COLUMN_CANDIDATES_VOTES+"=? WHERE "+COLUMN_CANDIDATES_ID+"=?";
+    private static final String QUERY_FOR_CANDIDATE = "SELECT * FROM " + TABLE_CANDIDATES + " WHERE " + COLUMN_CANDIDATES_ID + "=?";
+    private static final String UPDATE_VOTES_FOR_CANDIDATE = "UPDATE " + TABLE_CANDIDATES + " SET " + COLUMN_CANDIDATES_VOTES + "=? WHERE " + COLUMN_CANDIDATES_ID + "=?";
 
-    public static final String QUERY_FOR_PARTY = "SELECT * FROM "+TABLE_PARTYS+" WHERE "+COLUMN_PARTYS_ID+"=?";
-    public static final String UPDATE_VOTES_FOR_PARTY = "UPDATE "+TABLE_PARTYS+" SET "+COLUMN_PARTYS_VOTES+"=? WHERE "+COLUMN_PARTYS_ID+"=?";
+    private static final String QUERY_FOR_PARTY = "SELECT * FROM " + TABLE_PARTYS + " WHERE " + COLUMN_PARTYS_ID + "=?";
+    private static final String UPDATE_VOTES_FOR_PARTY = "UPDATE " + TABLE_PARTYS + " SET " + COLUMN_PARTYS_VOTES + "=? WHERE " + COLUMN_PARTYS_ID + "=?";
 
-    public static final String QUERY_FOR_VALVOTES = "SELECT * FROM "+TABLE_VALVOTES+" WHERE "+COLUMN_VALVOTES_STATUS+"=?";
-    public static final String UPDATE_NUMBER_FOR_VALVOTES = "UPDATE "+TABLE_VALVOTES+" SET "+COLUMN_VALVOTES_NUMBER+"=? WHERE "+COLUMN_VALVOTES_STATUS+"=?";
+    private static final String QUERY_FOR_VALVOTES = "SELECT * FROM " + TABLE_VALVOTES + " WHERE " + COLUMN_VALVOTES_STATUS + "=?";
+    private static final String UPDATE_NUMBER_FOR_VALVOTES = "UPDATE " + TABLE_VALVOTES + " SET " + COLUMN_VALVOTES_NUMBER + "=? WHERE " + COLUMN_VALVOTES_STATUS + "=?";
 
-    public static final String QUERY_CANDIDATES_STATISTIC = "SELECT "+COLUMN_CANDIDATES_VOTES+", "+COLUMN_CANDIDATES_NAME+" FROM "+TABLE_CANDIDATES+" ORDER BY "+COLUMN_CANDIDATES_VOTES+" DESC";
-    public static final String QUERY_PARTIES_STATISTIC = "SELECT "+COLUMN_PARTYS_VOTES+", "+COLUMN_PARTYS_NAME+" FROM "+TABLE_PARTYS+" ORDER BY "+COLUMN_PARTYS_VOTES+" DESC";
+    private static final String QUERY_CANDIDATES_STATISTIC = "SELECT " + COLUMN_CANDIDATES_VOTES + ", " + COLUMN_CANDIDATES_NAME + " FROM " + TABLE_CANDIDATES + " ORDER BY " + COLUMN_CANDIDATES_VOTES + " DESC";
+    private static final String QUERY_PARTIES_STATISTIC = "SELECT " + COLUMN_PARTYS_VOTES + ", " + COLUMN_PARTYS_NAME + " FROM " + TABLE_PARTYS + " ORDER BY " + COLUMN_PARTYS_VOTES + " DESC";
 
-    public static final int HARD_HASH_VALUE = 7;
+    private static final int HARD_HASH_VALUE = 7;
 
 
     private Connection conn;
@@ -120,18 +113,6 @@ public class Datasource {
         }
     }
 
-    public void printTables() {
-        try {
-            DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet result = metaData.getTables(null, null, "%", null);
-            while (result.next()) {
-                System.out.println(result.getString(3));
-            }
-        } catch (SQLException e) {
-            System.out.println("ERROR; PRINT TABLES : " + e.getMessage());
-        }
-    }
-
     public void printCandidates() {
         try {
             Statement statement = conn.createStatement();
@@ -144,58 +125,59 @@ public class Datasource {
         }
     }
 
-    public int numberOfCandidates() {
-        int counter=0;
+    private int numberOfCandidates() {
+        int counter = 0;
         try {
             Statement statement = conn.createStatement();
             ResultSet result = statement.executeQuery(PRINT_CANDIDATES_AND_PARTY);
             while (result.next()) {
-                counter+=1;
+                counter += 1;
             }
         } catch (SQLException e) {
             e.getStackTrace();
         }
         return counter;
     }
+
     /**
      * This method is to check if user choosed only one valid option.
      * Advantage of String using is that even if user would choose multiple choices
-     *  i.e. "1, 5" or "12 4" program will accept that input but it will not be valid
+     * i.e. "1, 5" or "12 4" program will accept that input but it will not be valid
      */
-    private boolean voteValidation(String choose){
+    private boolean voteValidation(String choose) {
         try {
             int chooseInt = Integer.parseInt(choose);
-            if(chooseInt>=1 && chooseInt<=numberOfCandidates()){
+            if (chooseInt >= 1 && chooseInt <= numberOfCandidates()) {
                 return true;
-            }else{
+            } else {
                 return false;
             }
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             return false;
         }
     }
 
 
-    public void vote(String name, String pesel, String choose){
-        if(voteValidation(choose)){
+    public void vote(String name, String pesel, String choose) {
+        if (voteValidation(choose)) {
             addVoterToDB(name, pesel, 1);
             voteForCandidate(Integer.parseInt(choose));
             addStatistics("valid");
-        }else{
+        } else {
             addVoterToDB(name, pesel, 1);
             addStatistics("nonvalid");
         }
 
     }
 
-    private void voteForCandidate(int candNumber){
+    private void voteForCandidate(int candNumber) {
         try {
             PreparedStatement findStatement = conn.prepareStatement(QUERY_FOR_CANDIDATE);
             findStatement.setInt(1, candNumber);
             ResultSet findResult = findStatement.executeQuery();
             int actualVotes = findResult.getInt(4);
             PreparedStatement updateStatement = conn.prepareStatement(UPDATE_VOTES_FOR_CANDIDATE);
-            updateStatement.setInt(1, actualVotes+1);
+            updateStatement.setInt(1, actualVotes + 1);
             updateStatement.setInt(2, findResult.getInt(1));
             updateStatement.execute();
             voteForParty(findResult.getInt(3));
@@ -206,86 +188,137 @@ public class Datasource {
         }
     }
 
-    private void voteForParty(int partyNumber){
-        try{
+    private void voteForParty(int partyNumber) {
+        try {
             PreparedStatement findPartyStatement = conn.prepareStatement(QUERY_FOR_PARTY);
             findPartyStatement.setInt(1, partyNumber);
             ResultSet findPartyResult = findPartyStatement.executeQuery();
             int actualVotes = findPartyResult.getInt(3);
             PreparedStatement updateStatement = conn.prepareStatement(UPDATE_VOTES_FOR_PARTY);
-            updateStatement.setInt(1, actualVotes+1);
+            updateStatement.setInt(1, actualVotes + 1);
             updateStatement.setInt(2, findPartyResult.getInt(1));
             updateStatement.execute();
 
             updateStatement.close();
             findPartyStatement.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getMessage();
         }
     }
 
-    public void printVoteResults(){
+    public void printVoteResults(String barGraph, String toReport) {
 
-        try{
-            Statement candidatesStatement = conn.createStatement();
-            ResultSet candidatesResult = candidatesStatement.executeQuery(QUERY_CANDIDATES_STATISTIC);
+        try {
+            ResultSet noPermitVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "nopermission");
+            int noPermissionVotes = noPermitVoteResult.getInt(2);
+
+            ResultSet valVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "valid");
+            int validVotes = valVoteResult.getInt(2);
+
+            ResultSet nonVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "nonvalid");
+            int nonValidVotes = nonVoteResult.getInt(2);
+
+
             System.out.println("==== CANDIDATES VOTING RESULTS ====");
-            while(candidatesResult.next()){
-                System.out.println(candidatesResult.getInt(1)+" : \t"+candidatesResult.getString(2));
+            Statement canStatement = conn.createStatement();
+            ResultSet candidatesResult = canStatement.executeQuery(QUERY_CANDIDATES_STATISTIC);
+            while (candidatesResult.next()) {
+                double perc = givePercens(validVotes, candidatesResult.getInt(1));
+                if (barGraph.equals("Y")) {
+                    System.out.println(candidatesResult.getInt(1) + " :  " + perc + "%\t" + barDraw(perc) + "\t\t:  " + candidatesResult.getString(2));
+                } else {
+                    System.out.println(candidatesResult.getInt(1) + " :  " + perc + "%\t:  " + candidatesResult.getString(2));
+                }
             }
             Statement partyStatement = conn.createStatement();
             ResultSet partyResult = partyStatement.executeQuery(QUERY_PARTIES_STATISTIC);
             System.out.println("==== PARTIES VOTING RESULTS ====");
-            while(partyResult.next()){
-                System.out.println(partyResult.getInt(1)+" : \t"+partyResult.getString(2));
+            while (partyResult.next()) {
+
+                double perc = givePercens(validVotes, partyResult.getInt(1));
+                if (barGraph.equals("Y")) {
+                    System.out.println(partyResult.getInt(1) + " : " + perc + "%\t" + barDraw(perc) + "\t\t:  " + partyResult.getString(2));
+                } else {
+                    System.out.println(partyResult.getInt(1) + " : " + perc + "%\t:  " + partyResult.getString(2));
+                }
             }
-            PreparedStatement valVoteStatement = conn.prepareStatement(QUERY_FOR_VALVOTES);
-            valVoteStatement.setString(1, "nonvalid");
+            if(toReport.equals("Y")){
+                System.out.println("\n"+validVotes+"\t : Number of valid votes");
+                System.out.println(nonValidVotes+"\t : Number of nonvalid votes");
+                System.out.println(noPermissionVotes+"\t : Trying to vote without permission\n");
+                System.out.println("Press 'C' to continue");
+            }
+        } catch (SQLException e) {
+            e.getMessage();
+        }
+    }
+
+    public double givePercens(int whole, int fraction) {
+        double dWhole = whole;
+        double dFraction = fraction;
+        double percent = (dFraction/dWhole)*100;
+        double decimal=Math.pow(10, 1);
+        return Math.round(percent*decimal)/decimal;
+    }
+
+    public String barDraw(double perc) {
+        String bar ="";
+        for (int i = 0; i <= (perc / 10); i++) {
+            bar+="|" ;
+        }
+        return bar;
+    }
+
+    private ResultSet getVotesAmount(String query, String voteType) {
+        try {
+            PreparedStatement valVoteStatement = conn.prepareStatement(query);
+            valVoteStatement.setString(1, voteType);
             ResultSet valVoteResult = valVoteStatement.executeQuery();
-            System.out.println("Non valid votes : "+valVoteResult.getInt(2));
-
-        }catch (SQLException e){
+            return valVoteResult;
+        } catch (
+                SQLException e) {
             e.getMessage();
+            return null;
         }
     }
 
-    private void prepareStatisticsTable(){
-        try{
+    private void prepareStatisticsTable() {
+        try {
             Statement statement = conn.createStatement();
-            statement.execute("INSERT INTO "+TABLE_VALVOTES+" ("+COLUMN_VALVOTES_STATUS+", "+COLUMN_VALVOTES_NUMBER+") VALUES (\"valid\", 0)");
-            statement.execute("INSERT INTO "+TABLE_VALVOTES+" ("+COLUMN_VALVOTES_STATUS+", "+COLUMN_VALVOTES_NUMBER+") VALUES (\"nonvalid\", 0)");
-            statement.execute("INSERT INTO "+TABLE_VALVOTES+" ("+COLUMN_VALVOTES_STATUS+", "+COLUMN_VALVOTES_NUMBER+") VALUES (\"nopermission\", 0)");
-        }catch (SQLException e){
+            statement.execute("INSERT INTO " + TABLE_VALVOTES + " (" + COLUMN_VALVOTES_STATUS + ", " + COLUMN_VALVOTES_NUMBER + ") VALUES (\"valid\", 0)");
+            statement.execute("INSERT INTO " + TABLE_VALVOTES + " (" + COLUMN_VALVOTES_STATUS + ", " + COLUMN_VALVOTES_NUMBER + ") VALUES (\"nonvalid\", 0)");
+            statement.execute("INSERT INTO " + TABLE_VALVOTES + " (" + COLUMN_VALVOTES_STATUS + ", " + COLUMN_VALVOTES_NUMBER + ") VALUES (\"nopermission\", 0)");
+        } catch (SQLException e) {
             e.getMessage();
         }
     }
 
-    public void addStatistics(String status){
-        try{
+    private void addStatistics(String status) {
+        try {
             PreparedStatement findStatement = conn.prepareStatement(QUERY_FOR_VALVOTES);
             findStatement.setString(1, status);
             ResultSet result = findStatement.executeQuery();
             int actualVotes = result.getInt(2);
-            System.out.println(result.getString(1)+"  = > "+result.getInt(2));
+//            System.out.println(result.getString(1)+"  = > "+result.getInt(2));
 
             PreparedStatement updateStatement = conn.prepareStatement(UPDATE_NUMBER_FOR_VALVOTES);
-            updateStatement.setInt(1, actualVotes+1);
+            updateStatement.setInt(1, actualVotes + 1);
             updateStatement.setString(2, status);
             updateStatement.execute();
 
             updateStatement.close();
             findStatement.close();
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getMessage();
         }
     }
 
-    private void addVoterToDB(String name, String pesel, int voted){
-        try{
+    private void addVoterToDB(String name, String pesel, int voted) {
+        try {
             Statement statement = conn.createStatement();
-            String insert = ADD_VOTER_TO_VOTE_LIST+name+"\", \""+pesel+"\", "+voted+")";
+            String insert = ADD_VOTER_TO_VOTE_LIST + name + "\", \"" + pesel + "\", " + voted + ")";
             statement.execute(insert);
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.getMessage();
         }
     }
@@ -307,7 +340,7 @@ public class Datasource {
             addStatistics("nopermission");
             return false;
         }
-        if(hasAlreadyVoted(pesel)){
+        if (hasAlreadyVoted(pesel)) {
             return false;
         }
         return true;
@@ -322,7 +355,7 @@ public class Datasource {
         }
     }
 
-    public LocalDate getDateFromPesel(String pesel) {
+    private LocalDate getDateFromPesel(String pesel) {
         String dateInfo = pesel.substring(0, 6);
         String strDate;
         //Checking if someone was born after 2000
@@ -332,57 +365,50 @@ public class Datasource {
         } else {
             strDate = "19" + dateInfo.substring(0, 2) + "-" + dateInfo.substring(2, 4) + "-" + dateInfo.substring(4, 6);
         }
-//        try {
-//            SimpleDateFormat formatter = new SimpleDateFormat(DATE_FORMAT);
-//            Date date1 = formatter.parse(strDate);
-//            return date1;
-            LocalDate date = LocalDate.parse(strDate);
-//        }
-//             catch (ParseException e) {
-//            System.out.println("Problem occuring + " + e.getMessage());
-//            return null;
+        LocalDate date = LocalDate.parse(strDate);
+
         return date;
-//        }
     }
 
-    public boolean isAdult(LocalDate userDate) {
-        System.out.println("Input " + userDate.toString());
+    private boolean isAdult(LocalDate userDate) {
+        // System.out.println("Input " + userDate.toString());
         userDate = userDate.plusYears(18);
         LocalDate d = LocalDate.now();
-        System.out.println("counted Date " + d.toString());
-        if (userDate.isBefore(d.plusDays(1))){
+        //System.out.println("counted Date " + d.toString());
+        if (userDate.isBefore(d.plusDays(1))) {
             return true;
-        }else{
+        } else {
             System.out.println("You are under 18");
             return false;
         }
     }
 
-    public boolean isBlocked(String peselToBeChecked) {
+    private boolean isBlocked(String peselToBeChecked) {
         try {
-
-            Statement statement = conn.createStatement();
-            String query = CHECK_BLOCK_PESEL + peselToBeChecked + "\"";
-            ResultSet resultSet = statement.executeQuery(query);
+            PreparedStatement statement = conn.prepareStatement(CHECK_BLOCK_PESEL);
+            statement.setString(1, peselToBeChecked);
+            ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
+                System.out.println("You have no voting rights.");
+                statement.close();
                 return true;
             } else {
-                System.out.println("You have no voting rights.");
+                statement.close();
                 return false;
             }
         } catch (SQLException e) {
-            System.out.println("here " + e.getMessage());
+            e.getMessage();
             return false;
         }
     }
 
-    private boolean hasAlreadyVoted(String pesel){
+    private boolean hasAlreadyVoted(String pesel) {
         try {
             Statement statement = conn.createStatement();
             String query = QUERY_TO_FIND_VOTER + pesel + "\"";
             ResultSet resultSet = statement.executeQuery(query);
             if (resultSet.next()) {
-                if(resultSet.getString(4).equals("1")) {
+                if (resultSet.getString(4).equals("1")) {
                     System.out.println("You have already voted.");
                     return true;
                 }
@@ -410,7 +436,7 @@ public class Datasource {
         return ret;
     }
 
-    public InputStream connectionXML(String table) {
+    private InputStream connectionXML(String table) {
         try {
             URL url = new URL(table);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -469,7 +495,7 @@ public class Datasource {
                 }
             }
             for (String text : candidateList.keySet()) {
-                System.out.println(text + " === " + candidateList.get(text));
+                // System.out.println(text + " === " + candidateList.get(text));
             }
         } catch (Exception e) {
             e.getMessage();
@@ -491,10 +517,10 @@ public class Datasource {
             Candidate tempCand = new Candidate(cand, tempParty);
             candidateSet.add(tempCand);
         }
-        System.out.println();
-        for (Candidate cand : candidateSet) {
-            System.out.println(cand.getName() + " : " + cand.getParty().getId() + " : " + cand.getParty().getName());
-        }
+//        System.out.println();
+//        for (Candidate cand : candidateSet) {
+//            System.out.println(cand.getName() + " : " + cand.getParty().getId() + " : " + cand.getParty().getName());
+//        }
         updatePartys(partiesSet);
         updateCandidates(candidateSet);
     }
@@ -505,7 +531,7 @@ public class Datasource {
             Statement statement = conn.createStatement();
             for (Candidate cand : candidateSet) {
                 String candidateAdding = ADD_CANDIDATES + cand.getName() + "\", " + cand.getParty().getId() + ", " + cand.getVotes() + ")";
-                System.out.println(candidateAdding);
+                // System.out.println(candidateAdding);
                 statement.execute(candidateAdding);
 //                statement.execute(partyAdding);
             }
@@ -519,7 +545,7 @@ public class Datasource {
             Statement statement = conn.createStatement();
             for (Party part : setPartys) {
                 String partyAdding = ADD_PARTY + part.getId() + ", \"" + part.getName() + "\", " + part.getVotes() + ")";
-                System.out.println(partyAdding);
+                //  System.out.println(partyAdding);
                 statement.execute(partyAdding);
             }
         } catch (SQLException e) {
