@@ -199,6 +199,7 @@ public class Datasource {
      */
     private boolean isBlocked(String peselToBeChecked) {
         try {
+            updateBlockedPeople();
             PreparedStatement statement = conn.prepareStatement(CHECK_BLOCK_PESEL);
             statement.setString(1, codePesel(peselToBeChecked));
             ResultSet resultSet = statement.executeQuery();

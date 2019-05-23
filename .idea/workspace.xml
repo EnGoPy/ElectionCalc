@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="63bfcfda-e5ed-4bef-b907-757b442422b3" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Datasource.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Datasource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/electData.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/electData.db" beforeDir="false" afterPath="$PROJECT_DIR$/electData.db" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/com/wojtasik/Datasource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wojtasik/Datasource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wojtasik/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wojtasik/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wojtasik/electData.db" beforeDir="false" afterPath="$PROJECT_DIR$/electData.db" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -46,12 +41,12 @@
         <counts>
           <entry key="dummy" value="2" />
           <entry key="gitignore" value="12" />
-          <entry key="java" value="24188" />
+          <entry key="java" value="24191" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.types.edit">
         <counts>
-          <entry key="JAVA" value="24188" />
+          <entry key="JAVA" value="24191" />
           <entry key="PLAIN_TEXT" value="14" />
         </counts>
       </usages-collector>
@@ -74,8 +69,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/wojtasik/Datasource.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1966">
-              <caret line="93" column="62" selection-start-line="93" selection-start-column="62" selection-end-line="93" selection-end-column="62" />
+            <state relative-caret-position="302">
+              <caret line="220" column="45" lean-forward="true" selection-start-line="220" selection-start-column="45" selection-end-line="220" selection-end-column="45" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#3989#4309#0" />
@@ -199,24 +194,6 @@
               <item name="ElectionCalc" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
               <item name="ElectionCalc" type="2674bda8:ScopeViewTreeModel$GroupNode" />
             </path>
-            <path>
-              <item name="ElectionCalc" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="ElectionCalc" type="2674bda8:ScopeViewTreeModel$GroupNode" />
-              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="ElectionCalc" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="ElectionCalc" type="2674bda8:ScopeViewTreeModel$GroupNode" />
-              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-              <item name="com" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
-            <path>
-              <item name="ElectionCalc" type="3d21c010:ScopeViewTreeModel$ProjectNode" />
-              <item name="ElectionCalc" type="2674bda8:ScopeViewTreeModel$GroupNode" />
-              <item name="src" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-              <item name="com" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-              <item name="wojtasik" type="9f88c78c:ScopeViewTreeModel$FileNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -247,7 +224,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558575892816" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558577143633" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/src/com/wojtasik/sqlite-jdbc-3.27.2.1.jar!/" />
     <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
@@ -313,7 +290,7 @@
     <frame x="67" y="25" width="1853" height="1175" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.1931378" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.1931378" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -322,12 +299,12 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32960895" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.36363637" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.36363637" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39904305" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3291866" />
-      <window_info anchor="bottom" id="Terminal" order="7" weight="0.33014354" />
+      <window_info anchor="bottom" id="Terminal" order="7" visible="true" weight="0.33014354" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.3291866" />
@@ -515,8 +492,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/wojtasik/Datasource.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1966">
-          <caret line="93" column="62" selection-start-line="93" selection-start-column="62" selection-end-line="93" selection-end-column="62" />
+        <state relative-caret-position="302">
+          <caret line="220" column="45" lean-forward="true" selection-start-line="220" selection-start-column="45" selection-end-line="220" selection-end-column="45" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#3989#4309#0" />
