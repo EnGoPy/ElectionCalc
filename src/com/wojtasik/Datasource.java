@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -81,21 +82,16 @@ public class Datasource {
 
     public boolean open() {
         try {
-            //Checking current directory on disk
             Path currentRelativePath = Path.of("");
-            String adress = ("jdbc:sqlite:" + currentRelativePath.toAbsolutePath().toString() + "/src/com/wojtasik/" + DB_NAME);
+            String adress = ("jdbc:sqlite:" + currentRelativePath.toAbsolutePath().toString() + "/" + DB_NAME);
             conn = DriverManager.getConnection(adress);
-            System.out.println("Connected");
+            System.out.println("Connected to database");
             updateBlockedPeople();
             cleanTable(TABLE_VALVOTES);
             prepareStatisticsTable();
             cleanTable(TABLE_CANDIDATES);
             cleanTable(TABLE_PARTYS);
             setCandidatePartyRelation(getCandidatesFromXML());
-
-            //Prepared statements
-
-
             return true;
         } catch (SQLException e) {
             System.out.println("Couldn't connect to database: " + e.getMessage());
@@ -113,6 +109,9 @@ public class Datasource {
         }
     }
 
+    /**
+     * Code or decode String value. Coding/decoding depends on sgn of given key)
+     */
     private String simpleHash(String message, int key) {
         String s = "";
         int len = message.length();
@@ -121,15 +120,12 @@ public class Datasource {
         }
         return s;
     }
-
+    /**
+     * Code String value with a static key
+     */
     private String codePesel(String text) {
         return simpleHash(text, HARD_HASH_VALUE);
     }
-
-    private String uncodePesel(String text) {
-        return simpleHash(text, -HARD_HASH_VALUE);
-    }
-
 
     /**
      * This method is to check if user choosed only one valid option.
@@ -149,6 +145,9 @@ public class Datasource {
         }
     }
 
+    /**
+     * Return number of Candidates
+     */
     private int numberOfCandidates() {
         int counter = 0;
         try {
@@ -163,7 +162,10 @@ public class Datasource {
         return counter;
     }
 
-
+    /**
+     * Return boolean value if user is allowed to vote.
+     * Tests and access depends only on pesel number
+     */
     public boolean votingAccess(String name, String pesel) {
         if (!nameValidate(name) || !peselValidate(pesel)) {
             return false;
@@ -177,7 +179,10 @@ public class Datasource {
         }
         return true;
     }
-
+    /**
+     * Return true if user is at least 18 while login.
+     * Return false otherwise
+     */
     private boolean isAdult(LocalDate userDate) {
         userDate = userDate.plusYears(18);
         LocalDate d = LocalDate.now();
@@ -188,7 +193,10 @@ public class Datasource {
             return false;
         }
     }
-
+    /**
+     * Return true if user has voting rights,
+     * pesel number is hashing and comparing with hashed values in database
+     */
     private boolean isBlocked(String peselToBeChecked) {
         try {
             PreparedStatement statement = conn.prepareStatement(CHECK_BLOCK_PESEL);
@@ -208,7 +216,10 @@ public class Datasource {
             return false;
         }
     }
-
+    /**
+     * Return true if user has already voted,
+     * return false if this is his first voting
+     */
     private boolean hasAlreadyVoted(String pesel) {
         try {
             PreparedStatement statement = conn.prepareStatement(QUERY_TO_FIND_VOTER);
@@ -226,7 +237,10 @@ public class Datasource {
             return false;
         }
     }
-
+    /**
+     * This method calls rest private methods to manage voting process
+     * and statistics update
+     */
     public void vote(String name, String pesel, String choose) {
         if (voteValidation(choose)) {
             addVoterToDB(name, pesel, 1);
@@ -237,7 +251,9 @@ public class Datasource {
             addStatistics("nonvalid");
         }
     }
-
+    /**
+     * Print actual number of candidate, name of candidate and party
+     */
     public void printCandidates() {
         try {
             Statement statement = conn.createStatement();
@@ -251,7 +267,10 @@ public class Datasource {
         }
     }
 
-
+    /**
+     * Search for candidate in database based on his number on voting list
+     * and increase votes field.
+     */
     private void voteForCandidate(int candNumber) {
         try {
             PreparedStatement findStatement = conn.prepareStatement(QUERY_FOR_CANDIDATE);
@@ -269,7 +288,10 @@ public class Datasource {
             e.getStackTrace();
         }
     }
-
+    /**
+     * Search for party in database based on choose candidate
+     * and increase votes field.
+     */
     private void voteForParty(int partyNumber) {
         try {
             PreparedStatement findPartyStatement = conn.prepareStatement(QUERY_FOR_PARTY);
@@ -287,7 +309,74 @@ public class Datasource {
             e.getMessage();
         }
     }
+    /**
+     * Create export.csv file on local disk with voting statistics
+     */
+    public void generateCSV() {
+        try {
+            ResultSet noPermitVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "nopermission");
+            int noPermissionVotes = noPermitVoteResult.getInt(2);
+            ResultSet valVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "valid");
+            int validVotes = valVoteResult.getInt(2);
+            ResultSet nonVoteResult = getVotesAmount(QUERY_FOR_VALVOTES, "nonvalid");
+            int nonValidVotes = nonVoteResult.getInt(2);
 
+            Statement canStatement = conn.createStatement();
+            ResultSet candidatesResult = canStatement.executeQuery(QUERY_CANDIDATES_STATISTIC);
+
+            Statement partyStatement = conn.createStatement();
+            ResultSet partyResult = partyStatement.executeQuery(QUERY_PARTIES_STATISTIC);
+
+            FileWriter csvFile = new FileWriter("export.csv");
+            csvFile.append("CandidateName");
+            csvFile.append(",");
+            csvFile.append("VotesNumber");
+            csvFile.append(",");
+            csvFile.append("Percent");
+            csvFile.append("\n");
+            while (candidatesResult.next()) {
+                double perc = givePercents(validVotes, candidatesResult.getInt(1));
+                csvFile.append(candidatesResult.getString(2));
+                csvFile.append(",");
+                csvFile.append(candidatesResult.getString(1));
+                csvFile.append(",");
+                csvFile.append(Double.toString(perc));
+                csvFile.append("\n");
+            }
+            csvFile.append("\n");
+            while (partyResult.next()) {
+                double perc = givePercents(validVotes, partyResult.getInt(1));
+                csvFile.append(partyResult.getString(2));
+                csvFile.append(",");
+                csvFile.append(partyResult.getString(1));
+                csvFile.append(",");
+                csvFile.append(Double.toString(perc));
+                csvFile.append("\n");
+            }
+            csvFile.append("\n");
+            csvFile.append("ValidVotes");
+            csvFile.append(",");
+            csvFile.append("NonValidVotes");
+            csvFile.append(",");
+            csvFile.append("BlockedAccesses");
+            csvFile.append("\n");
+            csvFile.append(Integer.toString(validVotes));
+            csvFile.append(",");
+            csvFile.append(Integer.toString(nonValidVotes));
+            csvFile.append(",");
+            csvFile.append(Integer.toString(noPermissionVotes));
+            csvFile.append("\n");
+
+            csvFile.flush();
+            csvFile.close();
+
+        } catch (Exception e){
+            e.getMessage();
+        }
+    }
+    /**
+     * Print voting statistics
+     */
     public void printVoteResults(String barGraph, String toReport) {
 
         try {
@@ -325,15 +414,18 @@ public class Datasource {
                 System.out.println("\n" + validVotes + "\t : Number of valid votes");
                 System.out.println(nonValidVotes + "\t : Number of nonvalid votes");
                 System.out.println(noPermissionVotes + "\t : Trying to vote without permission\n");
-                System.out.println("Press 'C' to continue");
+            }else {
+                System.out.println(nonValidVotes + "\t : Number of nonvalid votes");
             }
             canStatement.close();
             partyStatement.close();
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            e.getMessage();
         }
     }
-
+    /**
+     * Return rounded percent value based on two inputs
+     */
     private double givePercents(int whole, int fraction) {
         double dWhole = whole;
         double dFraction = fraction;
@@ -341,7 +433,9 @@ public class Datasource {
         double decimal = Math.pow(10, 1);
         return Math.round(percent * decimal) / decimal;
     }
-
+    /**
+     * GUI for people without live taste
+     */
     private String barDraw(double perc) {
         String bar = "";
         for (int i = 0; i <= (perc / 10); i++) {
@@ -349,7 +443,9 @@ public class Datasource {
         }
         return bar;
     }
-
+    /**
+     * Return ResultSet with valid,nonvalid votes and blocked logs
+     */
     private ResultSet getVotesAmount(String query, String voteType) {
         try {
             PreparedStatement valVoteStatement = conn.prepareStatement(query);
@@ -362,7 +458,10 @@ public class Datasource {
             return null;
         }
     }
-
+    /**
+     * create empty fields for valid,nonvalid votes and blocked logs
+     * in valVotes table
+     */
     private void prepareStatisticsTable() {
         try {
             Statement statement = conn.createStatement();
@@ -374,7 +473,10 @@ public class Datasource {
             e.getMessage();
         }
     }
-
+    /**
+     * update fields for valid,nonvalid votes and blocked logs
+     * in valVotes table
+     */
     private void addStatistics(String status) {
         try {
             PreparedStatement findStatement = conn.prepareStatement(QUERY_FOR_VALVOTES);
@@ -394,7 +496,9 @@ public class Datasource {
             e.getMessage();
         }
     }
-
+    /**
+     * add successfully logged user to the database
+     */
     private void addVoterToDB(String name, String pesel, int voted) {
         try {
             PreparedStatement statement = conn.prepareStatement(ADD_VOTER_TO_VOTE_LIST);
@@ -408,7 +512,10 @@ public class Datasource {
         }
     }
 
-
+    /**
+     * return true if name doesn't contain any numbers
+     * return false otherwise
+     */
     private boolean nameValidate(String name) {
         if (!name.matches("[0-9]+")) {
             return true;
@@ -418,6 +525,10 @@ public class Datasource {
         }
     }
 
+    /**
+     * Return true if pesel doesn't contain any letters
+     * and is 11 digits long.
+     * */
     private boolean peselValidate(String pesel) {
         if (pesel.matches("[0-9]+") && pesel.length() == 11) {
             return true;
@@ -426,7 +537,9 @@ public class Datasource {
             return false;
         }
     }
-
+    /**
+     * Return date based on pesel number
+     */
     private LocalDate getDateFromPesel(String pesel) {
         String dateInfo = pesel.substring(0, 6);
         String strDate;
@@ -442,7 +555,9 @@ public class Datasource {
         return date;
     }
 
-
+    /**
+     * update people wihtout no voting rights on DB
+     * */
     private void updateBlockedPeople() {
         cleanTable(TABLE_BLOCKED);
         Document inputDoc = inputFromUrl(connectionXML(BLOCKED_ADRESS));
@@ -465,7 +580,9 @@ public class Datasource {
         }
     }
 
-
+    /**
+     * Return document via internet stream
+     * */
     private Document inputFromUrl(InputStream stream) {
         Document ret = null;
         DocumentBuilderFactory domFactory;
@@ -481,7 +598,10 @@ public class Datasource {
         }
         return ret;
     }
-
+    /**
+     * return InputStream for a URL
+     * also set connection request to get needed document format (XML)
+     * */
     private InputStream connectionXML(String table) {
         try {
             URL url = new URL(table);
@@ -494,7 +614,9 @@ public class Datasource {
             return null;
         }
     }
-
+    /**
+     * Return Map with Candidate name - Party name pairs
+     * */
     private Map<String, String> getCandidatesFromXML() {
         Document inputDoc = inputFromUrl(connectionXML(CANDIDATES_ADRESS));
         Map<String, String> candidateList = new HashMap<>();
@@ -516,16 +638,16 @@ public class Datasource {
                     candidateList.put(datas.get(0), datas.get(1));
                 }
             }
-            for (String text : candidateList.keySet()) {
-                // System.out.println(text + " === " + candidateList.get(text));
-            }
         } catch (Exception e) {
             e.getMessage();
         }
         return candidateList;
     }
 
-
+    /**
+     * Based on candidate-party input creates Candidate and Party unique objects
+     * and add them to HashSets. HashSet structure was choose on purpose
+     * */
     private void setCandidatePartyRelation(Map<String, String> candidateMap) {
         Set<Party> partiesSet = new HashSet<>();
         Set<Candidate> candidateSet = new HashSet<>();
@@ -540,10 +662,12 @@ public class Datasource {
             Candidate tempCand = new Candidate(cand, tempParty);
             candidateSet.add(tempCand);
         }
-        updatePartys(partiesSet);
+        updateParties(partiesSet);
         updateCandidates(candidateSet);
     }
-
+    /**
+     * Add candidates to database
+     * */
     private void updateCandidates(Set<Candidate> candidateSet) {
         try {
             PreparedStatement statement = conn.prepareStatement(ADD_CANDIDATES);
@@ -557,8 +681,10 @@ public class Datasource {
             System.out.println(e.getMessage());
         }
     }
-
-    private void updatePartys(Set<Party> setPartys) {
+    /**
+     * Add parties to database
+     * */
+    private void updateParties(Set<Party> setPartys) {
         try {
             PreparedStatement statement = conn.prepareStatement(ADD_PARTY);
             for (Party part : setPartys) {
@@ -571,7 +697,9 @@ public class Datasource {
             System.out.println(e.getMessage());
         }
     }
-
+    /**
+     * Return id party in database based on name
+     * */
     private int searchForParty(String party, Set<Party> partieSet) {
         for (Party part : partieSet) {
             if (part.getName().equals(party)) {
@@ -580,7 +708,9 @@ public class Datasource {
         }
         return 0;
     }
-
+    /**
+     * Clean needed tables. Calls while opening connection.
+     * */
     private void cleanTable(String tableName) {
         try {
             Statement statement = conn.createStatement();

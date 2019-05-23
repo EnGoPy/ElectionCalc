@@ -21,10 +21,8 @@ public class Main {
         while (!mainQuit) {
 
             printMenu();
-//            System.out.println("");
             System.out.print("Please enter your choose...");
             choose = inputValidation();
-            //   clrscrn();
             switch (choose) {
                 case 1:
                     login();
@@ -35,8 +33,14 @@ public class Main {
                     sc.next();
                     break;
                 case 3:
+                    String export;
                     datasource.printVoteResults("Y","Y");
-                    sc.next();
+                    System.out.println("Do you want export data to CSV? (Y/N)");
+                    export = sc.next();
+                    export = String.valueOf(export.charAt(0)).toUpperCase();
+                    if(export.equals("Y")){
+                        datasource.generateCSV();
+                    }
                     break;
                 case 4:
                     break;
@@ -60,8 +64,7 @@ public class Main {
 
     private static void login() {
         System.out.println("==== LOGIN TO VOTE ====");
-        System.out.println("* You can always logout by typing \"L\".");
-        System.out.println();
+        System.out.println("* You can always logout by typing \"L\".\n");
         System.out.println("Please enter your first name");
         String firstName = sc.next();
         if (!firstName.equals("L")) {
@@ -77,7 +80,7 @@ public class Main {
                     String name = firstName+" "+lastname;
                     if (datasource.votingAccess(name, pesel)) {
                         datasource.printCandidates();
-                        System.out.println("Choose your type: ");
+                        System.out.println("Choose your type: (number of candidate)");
                         String choose;
                         choose = sc.next();
                         choose += sc.nextLine();
@@ -102,15 +105,12 @@ public class Main {
     }
 
     private static void votingRules() {
-        System.out.println("");
-        System.out.println("======= VOTING RULES =======");
-        System.out.println();
+        System.out.println("\n======= VOTING RULES =======\n\n");
         System.out.println("* You must be over 18 to vote.");
         System.out.println("* While logging in please prepare your PESEL number.");
         System.out.println("* You are allowed to vote ONLY for one candidate. Multiple vote cards will be invalid.");
         System.out.println("* List of candidates and their parties will appear while voting.");
-        System.out.println("* Your vote for specific candidate means automatically vote for his party.");
-        System.out.println();
+        System.out.println("* Your vote for specific candidate means automatically vote for his party.\n");
         System.out.println("Press 'C' key to continue...");
     }
 
