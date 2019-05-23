@@ -170,14 +170,20 @@ public class Datasource {
         if (!nameValidate(name) || !peselValidate(pesel)) {
             return false;
         }
-        if (isBlocked(pesel) || !isAdult(getDateFromPesel(pesel))) {
-            addStatistics("nopermission");
+        if(getDateFromPesel(pesel) != null){
+            if (isBlocked(pesel) || !isAdult(getDateFromPesel(pesel))) {
+                addStatistics("nopermission");
+                return false;
+            }else{
+                if (hasAlreadyVoted(pesel)) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }else {
             return false;
         }
-        if (hasAlreadyVoted(pesel)) {
-            return false;
-        }
-        return true;
     }
     /**
      * Return true if user is at least 18 while login.
@@ -439,7 +445,7 @@ public class Datasource {
      */
     private String barDraw(double perc) {
         String bar = "";
-        for (int i = 0; i <= (perc / 10); i++) {
+        for (int i = 0; i <= (perc / 15); i++) {
             bar += "|";
         }
         return bar;
@@ -463,7 +469,7 @@ public class Datasource {
      * create empty fields for valid,nonvalid votes and blocked logs
      * in valVotes table
      */
-    private void prepareStatisticsTable() {
+    public void prepareStatisticsTable() {
         try {
             Statement statement = conn.createStatement();
             statement.execute("INSERT INTO " + TABLE_VALVOTES + " (" + COLUMN_VALVOTES_STATUS + ", " + COLUMN_VALVOTES_NUMBER + ") VALUES (\"valid\", 0)");
@@ -551,9 +557,13 @@ public class Datasource {
         } else {
             strDate = "19" + dateInfo.substring(0, 2) + "-" + dateInfo.substring(2, 4) + "-" + dateInfo.substring(4, 6);
         }
-        LocalDate date = LocalDate.parse(strDate);
-
-        return date;
+        try{
+            LocalDate date = LocalDate.parse(strDate);
+            return date;
+        }catch (Exception e){
+            System.out.println("Invalid pesel.");;
+            return null;
+        }
     }
 
     /**

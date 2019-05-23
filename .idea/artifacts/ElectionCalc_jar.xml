@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ElectionCalc:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ElectionCalc_jar</output-path>
+    <root id="archive" name="ElectionCalc_jar.jar">
+      <element id="module-output" name="ElectionCalc" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/src/com/wojtasik/sqlite-jdbc-3.27.2.1.jar" path-in-jar="/" />
+      <element id="file-copy" path="$PROJECT_DIR$/electData.db" />
+    </root>
+  </artifact>
+</component>

@@ -19,7 +19,6 @@ public class Main {
         boolean mainQuit = false;
         int choose;
         while (!mainQuit) {
-
             printMenu();
             System.out.print("Please enter your choose...");
             choose = inputValidation();
@@ -73,7 +72,7 @@ public class Main {
             if(!lastname.equals("L")) {
                 String pesel;
                 System.out.println("Please enter your pesel number");
-                pesel=sc.next();                        //This "strange" pesel read allow user to use spaces before, between or after
+                pesel=sc.next();                        //This  pesel read allow user to use spaces before, between or after
                 pesel+=sc.nextLine();                   //digits and pesel will be transformed correctly anyway (it's important input
                 pesel = pesel.replaceAll("\\s", "");    // that's why so many attention put here
                 if (!pesel.equals("L")) {
