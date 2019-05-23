@@ -7,14 +7,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="63bfcfda-e5ed-4bef-b907-757b442422b3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/artifacts/ElectionCalc_jar.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/electData.db" beforeDir="false" afterPath="$PROJECT_DIR$/electData.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Datasource.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Datasource.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Main.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/ElectionCalc/com/wojtasik/Main.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wojtasik/Datasource.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wojtasik/Datasource.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/wojtasik/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/wojtasik/Main.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -73,7 +66,7 @@
         <entry file="file://$PROJECT_DIR$/src/com/wojtasik/Main.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="360">
-              <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+              <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -251,7 +244,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558604756878" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1558604956491" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/electData.db" />
     <property name="project.structure.last.edited" value="Artifacts" />
     <property name="project.structure.proportion" value="0.15" />
@@ -274,7 +267,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="JAR Application.ElectionCalc_jar.jar">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="com.wojtasik.Main" />
       <module name="ElectionCalc" />
@@ -295,8 +288,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Main" />
         <item itemvalue="JAR Application.ElectionCalc_jar.jar" />
+        <item itemvalue="Application.Main" />
       </list>
     </recent_temporary>
   </component>
@@ -334,12 +327,12 @@
       <window_info id="Favorites" order="6" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32960895" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.36363637" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.36363637" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39904305" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" weight="0.3291866" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="7" visible="true" weight="0.33014354" />
+      <window_info anchor="bottom" id="Terminal" order="7" weight="0.33014354" />
       <window_info anchor="bottom" id="Event Log" order="8" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="9" show_stripe_button="false" />
       <window_info anchor="bottom" id="Messages" order="10" weight="0.3291866" />
@@ -567,7 +560,7 @@
     <entry file="file://$PROJECT_DIR$/src/com/wojtasik/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="360">
-          <caret line="24" column="29" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
+          <caret line="24" column="29" lean-forward="true" selection-start-line="24" selection-start-column="29" selection-end-line="24" selection-end-column="29" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
