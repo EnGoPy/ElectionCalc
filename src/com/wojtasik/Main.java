@@ -16,7 +16,6 @@ public class Main {
             return;
         }
 
-
         boolean mainQuit = false;
         int choose;
         while (!mainQuit) {
@@ -74,8 +73,6 @@ public class Main {
                 pesel=sc.next();                        //This "strange" pesel read allow user to use spaces before, between or after
                 pesel+=sc.nextLine();                   //digits and pesel will be transformed correctly anyway (it's important input
                 pesel = pesel.replaceAll("\\s", "");    // that's why so many attention put here
-                System.out.println(pesel);
-                System.out.println(pesel);
                 if (!pesel.equals("L")) {
                     String name = firstName+" "+lastname;
                     if (datasource.votingAccess(name, pesel)) {
@@ -84,8 +81,7 @@ public class Main {
                         String choose;
                         choose = sc.next();
                         choose += sc.nextLine();
-                        datasource.vote(firstName, pesel, choose);
-                        System.out.println("Thank you for your vote...");
+                        datasource.vote(name, pesel, choose);
                         System.out.println();
                         System.out.println("Voting results loading");
                         keepCalm();
@@ -95,8 +91,6 @@ public class Main {
                         graph = String.valueOf(graph.charAt(0)).toUpperCase();
                         datasource.printVoteResults(graph, "N");
 
-
-                        System.out.println(graph);
                         System.out.println("Press 'C' key to continue...");
                     }
                     else{
@@ -139,7 +133,7 @@ public class Main {
 
     private static void keepCalm() {
         try {
-            for (int i = 0; i <= 2; i++) {
+            for (int i = 0; i <= 1; i++) {
                 System.out.print(" . ");
                 TimeUnit.SECONDS.sleep(1);
             }
