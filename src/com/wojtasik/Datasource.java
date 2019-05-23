@@ -376,6 +376,7 @@ public class Datasource {
 
             csvFile.flush();
             csvFile.close();
+            System.out.println("CSV file \"export.csv\" successfully created\n");
 
         } catch (Exception e){
             e.getMessage();
@@ -469,7 +470,7 @@ public class Datasource {
      * create empty fields for valid,nonvalid votes and blocked logs
      * in valVotes table
      */
-    public void prepareStatisticsTable() {
+    private void prepareStatisticsTable() {
         try {
             Statement statement = conn.createStatement();
             statement.execute("INSERT INTO " + TABLE_VALVOTES + " (" + COLUMN_VALVOTES_STATUS + ", " + COLUMN_VALVOTES_NUMBER + ") VALUES (\"valid\", 0)");

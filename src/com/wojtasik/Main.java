@@ -83,17 +83,23 @@ public class Main {
                         String choose;
                         choose = sc.next();
                         choose += sc.nextLine();
-                        datasource.vote(name, pesel, choose);
-                        System.out.println();
-                        System.out.println("Voting results loading");
-                        keepCalm();
-                        String graph;
-                        System.out.println("Do you want to print primitive bar graph? (Y/N)");
-                        graph = sc.next();
-                        graph = String.valueOf(graph.charAt(0)).toUpperCase();
-                        datasource.printVoteResults(graph, "N");
-
-                        System.out.println("Press 'C' key to continue...");
+                        System.out.println("Do you confirm your choice ? (Y/N)");
+                        String confirmation = sc.next();
+                        confirmation = String.valueOf(confirmation.charAt(0)).toUpperCase();
+                        if(confirmation.equals("Y")){
+                            datasource.vote(name, pesel, choose);
+                            System.out.println();
+                            System.out.println("Voting results loading");
+                            String graph;
+                            System.out.println("Do you want to print primitive bar graph? (Y/N)");
+                            graph = sc.next();
+                            graph = String.valueOf(graph.charAt(0)).toUpperCase();
+                            keepCalm();
+                            datasource.printVoteResults(graph, "N");
+                            System.out.println("Press 'C' key to continue...");
+                        }else{
+                            System.out.println("Press 'C' key to go to Main menu...");
+                        }
                     }
                     else{
                         System.out.println("Press 'C' key to continue...");
